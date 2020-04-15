@@ -1,0 +1,21 @@
+diff --git a/target/linux/sunxi/image/Makefile b/target/linux/sunxi/image/Makefile
+index 705d409ac5..5f7e9e3030 100644
+--- a/target/linux/sunxi/image/Makefile
++++ b/target/linux/sunxi/image/Makefile
+@@ -35,11 +35,15 @@ define Device/Default
+   DEVICE_VARS := SUNXI_DTS SUNXI_DTS_DIR SUNXI_UBOOT
+   KERNEL_NAME := zImage
+   KERNEL := kernel-bin | uImage none
+-  IMAGES := sdcard.img.gz
++  IMAGES := sdcard.img.gz sysupgrade.bin
+   IMAGE/sdcard.img.gz := sunxi-sdcard | append-metadata | gzip
+   SUPPORTED_DEVICES := $(subst _,$(comma),$(1))
+   SUNXI_DTS_DIR :=
+   SUNXI_DTS = $$(SUNXI_DTS_DIR)$$(SOC)-$(lastword $(subst _, ,$(1)))
++  BLOCKSIZE := 64k
++  IMAGE_SIZE := 16384k
++  IMAGE/sysupgrade.bin = append-kernel | append-rootfs | pad-rootfs | \
++         append-metadata | check-size $$$$(IMAGE_SIZE)
+ endef
+ 
+ ifeq ($(SUBTARGET),cortexa7)
